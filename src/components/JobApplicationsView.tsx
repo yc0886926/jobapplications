@@ -600,57 +600,55 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
         <>
           {/* Status Filter Chips */}
           <div className="mb-6">
-            <div className="space-y-3">
-              {(() => {
-                const statusEntries = Object.entries(getStatusCounts());
-                const maxVisible = 6;
-                const visibleStatuses = showAllStatusChips ? statusEntries : statusEntries.slice(0, maxVisible);
-                const hiddenCount = statusEntries.length - maxVisible;
-                
-                return (
-                  <>
-                    <div className="flex flex-wrap gap-2">
-                      {visibleStatuses.map(([status, count]) => (
-                        <button
-                          key={status}
-                          onClick={() => toggleStatusFilter(status)}
-                          className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                            selectedStatusFilters.includes(status)
-                              ? 'bg-blue-100 text-blue-800 ring-2 ring-blue-200'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }`}
-                        >
-                          {status}
-                          <span className="ml-2 px-1.5 py-0.5 bg-white/60 rounded-full text-xs font-semibold">
-                            {count}
-                          </span>
-                        </button>
-                      ))}
-                      
-                      {!showAllStatusChips && hiddenCount > 0 && (
-                        <button
-                          onClick={() => setShowAllStatusChips(true)}
-                          className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-                        >
-                          +{hiddenCount} More
-                        </button>
-                      )}
-                    </div>
+            {(() => {
+              const statusEntries = Object.entries(getStatusCounts());
+              const maxVisible = 6;
+              const visibleStatuses = showAllStatusChips ? statusEntries : statusEntries.slice(0, maxVisible);
+              const hiddenCount = statusEntries.length - maxVisible;
+              
+              return (
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {visibleStatuses.map(([status, count]) => (
+                      <button
+                        key={status}
+                        onClick={() => toggleStatusFilter(status)}
+                        className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                          selectedStatusFilters.includes(status)
+                            ? 'bg-blue-100 text-blue-800 ring-2 ring-blue-200'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {status}
+                        <span className="ml-2 px-1.5 py-0.5 bg-white/60 rounded-full text-xs font-semibold">
+                          {count}
+                        </span>
+                      </button>
+                    ))}
                     
-                    {showAllStatusChips && statusEntries.length > maxVisible && (
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          onClick={() => setShowAllStatusChips(false)}
-                          className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-                        >
-                          Show Less
-                        </button>
-                      </div>
+                    {!showAllStatusChips && hiddenCount > 0 && (
+                      <button
+                        onClick={() => setShowAllStatusChips(true)}
+                        className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                      >
+                        +{hiddenCount} More
+                      </button>
                     )}
-                  </>
-                );
-              })()}
-            </div>
+                  </div>
+                  
+                  {showAllStatusChips && statusEntries.length > maxVisible && (
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => setShowAllStatusChips(false)}
+                        className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                      >
+                        Show Less
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Results Summary */}
