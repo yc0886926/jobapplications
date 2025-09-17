@@ -128,10 +128,6 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
     ];
 
     const statuses = [
-      'New',
-      'Phone Screen',
-      'Technical Review',
-      'Interview Scheduled',
       'Final Interview',
       'Offer Approval',
       'Offer Approved',
@@ -139,10 +135,7 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
       'Offer Accepted',
       'Offer Declined',
       'Ready to Hire',
-      'Hired',
-      'Rejected',
-      'Withdrawn',
-      'Portfolio Review'
+      'Hired'
     ];
 
     // Generate 60 requisitions with 100-150 applications each
@@ -195,14 +188,14 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
 
   // Statuses eligible for document generation
   const eligibleStatuses = [
+    'Final Interview',
     'Offer Approval',
     'Offer Approved',
     'Offer Extended',
     'Offer Accepted',
+    'Offer Declined',
     'Ready to Hire',
-    'Hired',
-    'Final Interview',
-    'Onboarding'
+    'Hired'
   ];
 
   // Apply custom filters
@@ -382,10 +375,6 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      'New': 'bg-blue-100 text-blue-800',
-      'Phone Screen': 'bg-yellow-100 text-yellow-800',
-      'Technical Review': 'bg-purple-100 text-purple-800',
-      'Interview Scheduled': 'bg-indigo-100 text-indigo-800',
       'Final Interview': 'bg-orange-100 text-orange-800',
       'Offer Approval': 'bg-yellow-100 text-yellow-800',
       'Offer Approved': 'bg-blue-100 text-blue-800',
@@ -393,10 +382,7 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
       'Offer Accepted': 'bg-green-200 text-green-900',
       'Offer Declined': 'bg-red-100 text-red-800',
       'Ready to Hire': 'bg-purple-100 text-purple-800',
-      'Hired': 'bg-emerald-100 text-emerald-800',
-      'Rejected': 'bg-red-100 text-red-800',
-      'Withdrawn': 'bg-gray-100 text-gray-800',
-      'Portfolio Review': 'bg-pink-100 text-pink-800'
+      'Hired': 'bg-emerald-100 text-emerald-800'
     };
     return colors[status] || 'bg-gray-100 text-gray-800';
   };
