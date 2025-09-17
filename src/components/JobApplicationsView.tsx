@@ -19,4 +19,4 @@ const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGenerate })
   );
 };
 
-export default JobApplicationsView;
+export { JobApplicationsView };
