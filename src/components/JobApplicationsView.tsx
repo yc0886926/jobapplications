@@ -37,6 +37,7 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
   const [viewMode, setViewMode] = useState<'accordion' | 'flat'>('flat');
   const [expandedRequisitions, setExpandedRequisitions] = useState<string[]>([]);
   const [selectedRequisitionStatus, setSelectedRequisitionStatus] = useState<Record<string, string>>({});
+  const [selectedRequisitionStatuses, setSelectedRequisitionStatuses] = useState<Record<string, string[]>>({});
   const [selectedApplications, setSelectedApplications] = useState<Record<string, string[]>>({});
   const [flatSelectedApplications, setFlatSelectedApplications] = useState<string[]>([]);
   const [selectedStatusFilters, setSelectedStatusFilters] = useState<string[]>([]);
@@ -427,10 +428,19 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
   };
 
   const handleRequisitionStatusFilter = (requisitionId: string, status: string) => {
-    setSelectedRequisitionStatus(prev => ({
-      ...prev,
-      [requisitionId]: prev[requisitionId] === status ? '' : status
-    }));
+    setSelectedRequisitionStatuses(prev => {
+      const currentStatuses = prev[requisitionId] || [];
+      const isSelected = currentStatuses.includes(status);
+      
+      const updatedStatuses = isSelected
+        ? currentStatuses.filter(s => s !== status)
+        : [...currentStatuses, status];
+      
+      return {
+        ...prev,
+        [requisitionId]: updatedStatuses
+      };
+    });
     // Reset loaded applications when filter changes
     setLoadedApplications(prev => ({
       ...prev,
@@ -439,9 +449,9 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
   };
 
   const getFilteredRequisitionApplications = (requisition: Requisition) => {
-    const selectedStatus = selectedRequisitionStatus[requisition.id];
-    return selectedStatus 
-      ? requisition.applications.filter(app => app.applicationStatus === selectedStatus)
+    const selectedStatuses = selectedRequisitionStatuses[requisition.id];
+    return selectedStatuses && selectedStatuses.length > 0
+      ? requisition.applications.filter(app => selectedStatuses.includes(app.applicationStatus))
       : requisition.applications;
   };
 
@@ -535,6 +545,7 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
     setSelectedApplications({});
     setFlatSelectedApplications([]);
     setSelectedStatusFilters([]);
+    setSelectedRequisitionStatuses({});
     setExpandedRequisitions([]);
     setShowAllStatusChips(false);
   };
@@ -807,7 +818,7 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
               const loadedCount = getLoadedApplicationsCount(requisition.id);
               const visibleApps = filteredApps.slice(0, loadedCount);
               const hasMoreApps = loadedCount < filteredApps.length;
-              const selectedStatus = selectedRequisitionStatus[requisition.id];
+              const selectedStatuses = selectedRequisitionStatuses[requisition.id] || [];
               const selectedApps = selectedApplications[requisition.id] || [];
               const isLoading = isLoadingApplications[requisition.id];
 
@@ -857,7 +868,7 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
                               key={status}
                               onClick={() => handleRequisitionStatusFilter(requisition.id, status)}
                               className={`p-3 rounded-lg border text-center transition-colors ${
-                                selectedStatus === status
+                                selectedStatuses.includes(status)
                                   ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
                                   : 'border-gray-200 hover:border-gray-300 hover:bg-white'
                               }`}
