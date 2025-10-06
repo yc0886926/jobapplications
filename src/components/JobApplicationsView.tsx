@@ -688,6 +688,7 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
                   </th>
                   <th className="text-left py-4 px-6 font-medium text-gray-900">Application ID</th>
                   <th className="text-left py-4 px-6 font-medium text-gray-900">Candidate Name</th>
+                  <th className="text-left py-4 px-6 font-medium text-gray-900">Candidate ID</th>
                   <th className="text-left py-4 px-6 font-medium text-gray-900">Job Requisition</th>
                   <th className="text-left py-4 px-6 font-medium text-gray-900">Application Status</th>
                   <th className="text-left py-4 px-6 font-medium text-gray-900">Hiring Manager</th>
@@ -731,10 +732,13 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
                         )}
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {app.candidateName} ({app.candidateId})
+                            {app.candidateName}
                           </div>
                         </div>
                       </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className="font-mono text-sm text-gray-600">{app.candidateId}</span>
                     </td>
                     <td className="py-4 px-6">
                       <div className="text-sm text-gray-900">
@@ -902,6 +906,7 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
                                 </th>
                                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Application ID</th>
                                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Candidate Name</th>
+                                <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Candidate ID</th>
                                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Application Status</th>
                                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Recruiter</th>
                                 <th className="w-12"></th>
