@@ -8,6 +8,7 @@ interface GeneratedItem {
   status: string;
   type: 'document' | 'process';
   userType: string;
+  entityType: 'Employee' | 'External User' | 'Applicant';
   user: { name: string; avatar: string | null };
   startDate: string;
   completionDate: string | null;
@@ -31,6 +32,7 @@ export const GeneratedDocsView: React.FC = () => {
       status: 'Completed',
       type: 'document',
       userType: 'Candidate',
+      entityType: 'Applicant',
       user: { name: 'Andrea Cruz', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2' },
       startDate: '08/20/24 3:05 PM',
       completionDate: '08/20/24 3:05 PM',
@@ -44,6 +46,7 @@ export const GeneratedDocsView: React.FC = () => {
       status: 'In Progress',
       type: 'document',
       userType: 'Candidate',
+      entityType: 'Applicant',
       user: { name: 'Alexa Dee', avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2' },
       startDate: '08/20/24 3:05 PM',
       completionDate: null,
@@ -57,6 +60,7 @@ export const GeneratedDocsView: React.FC = () => {
       status: 'Completed',
       type: 'document',
       userType: 'Employee',
+      entityType: 'Employee',
       user: { name: 'Inez Olendo', avatar: 'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2' },
       startDate: '08/20/24 3:05 PM',
       completionDate: '08/20/24 3:05 PM',
@@ -70,6 +74,7 @@ export const GeneratedDocsView: React.FC = () => {
       status: 'Error',
       type: 'document',
       userType: 'External User',
+      entityType: 'External User',
       user: { name: 'Freddie Ty', avatar: null },
       startDate: '08/20/24 3:05 PM',
       completionDate: null,
@@ -83,6 +88,7 @@ export const GeneratedDocsView: React.FC = () => {
       status: 'In Progress',
       type: 'process',
       userType: 'Candidate',
+      entityType: 'Applicant',
       user: { name: 'Peter Yap', avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2' },
       startDate: '08/20/24 3:05 PM',
       completionDate: null,
@@ -108,6 +114,7 @@ export const GeneratedDocsView: React.FC = () => {
       status: ['Completed', 'In Progress', 'Error'][i % 3],
       type: i % 2 === 0 ? 'document' : 'process',
       userType: ['Employee', 'External User', 'Candidate'][i % 3],
+      entityType: (['Employee', 'External User', 'Applicant'][i % 3]) as 'Employee' | 'External User' | 'Applicant',
       user: {
         name: ['Andrea Cruz', 'Alexa Dee', 'Inez Olendo', 'Freddie Ty', 'Peter Yap'][i % 5],
         avatar: i % 3 === 0 ? `https://images.pexels.com/photos/${1000000 + i}/pexels-photo-${1000000 + i}.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2` : null
@@ -122,6 +129,16 @@ export const GeneratedDocsView: React.FC = () => {
 
   return generatedItems;
   });
+
+  // Helper function to get entity type color
+  const getEntityTypeColor = (entityType: string) => {
+    switch (entityType) {
+      case 'Employee': return 'bg-blue-100 text-blue-800';
+      case 'External User': return 'bg-purple-100 text-purple-800';
+      case 'Applicant': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   // Helper function to format time remaining until expiration
   const formatTimeRemaining = (expiresAt: string): string => {
@@ -274,6 +291,7 @@ export const GeneratedDocsView: React.FC = () => {
               <th className="text-left py-4 px-6 font-medium text-gray-900">Name</th>
               <th className="text-left py-4 px-6 font-medium text-gray-900">Status</th>
               <th className="text-left py-4 px-6 font-medium text-gray-900">User</th>
+              <th className="text-left py-4 px-6 font-medium text-gray-900">Entity Type</th>
               <th className="text-left py-4 px-6 font-medium text-gray-900">Start Date ▲</th>
               <th className="text-left py-4 px-6 font-medium text-gray-900">Completion Date</th>
               <th className="w-12"></th>
@@ -325,6 +343,11 @@ export const GeneratedDocsView: React.FC = () => {
                     )}
                     <span className="text-gray-600">{item.user.name}</span>
                   </div>
+                </td>
+                <td className="py-4 px-6">
+                  <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getEntityTypeColor(item.entityType)}`}>
+                    {item.entityType}
+                  </span>
                 </td>
                 <td className="py-4 px-6 text-gray-600">
                   {item.startDate}
