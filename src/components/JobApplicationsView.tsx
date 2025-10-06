@@ -950,7 +950,6 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
                                         <div className="text-sm font-medium text-gray-900">
                                           {app.candidateName}
                                         </div>
-                                        <div className="text-xs text-gray-500">{app.email}</div>
                                       </div>
                                     </div>
                                   </td>
