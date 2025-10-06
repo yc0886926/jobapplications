@@ -948,11 +948,14 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
                                       )}
                                       <div>
                                         <div className="text-sm font-medium text-gray-900">
-                                          {app.candidateName} ({app.candidateId})
+                                          {app.candidateName}
                                         </div>
                                         <div className="text-xs text-gray-500">{app.email}</div>
                                       </div>
                                     </div>
+                                  </td>
+                                  <td className="py-3 px-4">
+                                    <span className="font-mono text-sm text-gray-600">{app.candidateId}</span>
                                   </td>
                                   <td className="py-3 px-4">
                                     <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(app.applicationStatus)}`}>
