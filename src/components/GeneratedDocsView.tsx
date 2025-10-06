@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Eye, FileText, Users, Filter, Download, Clock, AlertCircle } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface GeneratedItem {
   id: number;
@@ -10,6 +11,9 @@ interface GeneratedItem {
   user: { name: string; avatar: string | null };
   startDate: string;
   completionDate: string | null;
+  viewedAt?: string | null;
+  expiresAt?: string | null;
+  isExpired?: boolean;
   viewedAt?: string | null;
   expiresAt?: string | null;
   isExpired?: boolean;
@@ -29,7 +33,10 @@ export const GeneratedDocsView: React.FC = () => {
       userType: 'Candidate',
       user: { name: 'Andrea Cruz', avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2' },
       startDate: '08/20/24 3:05 PM',
-      completionDate: '08/20/24 3:05 PM'
+      completionDate: '08/20/24 3:05 PM',
+      viewedAt: null,
+      expiresAt: null,
+      isExpired: false
     },
     {
       id: 2,
@@ -39,7 +46,10 @@ export const GeneratedDocsView: React.FC = () => {
       userType: 'Candidate',
       user: { name: 'Alexa Dee', avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2' },
       startDate: '08/20/24 3:05 PM',
-      completionDate: null
+      completionDate: null,
+      viewedAt: null,
+      expiresAt: null,
+      isExpired: false
     },
     {
       id: 3,
@@ -49,7 +59,10 @@ export const GeneratedDocsView: React.FC = () => {
       userType: 'Employee',
       user: { name: 'Inez Olendo', avatar: 'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2' },
       startDate: '08/20/24 3:05 PM',
-      completionDate: '08/20/24 3:05 PM'
+      completionDate: '08/20/24 3:05 PM',
+      viewedAt: '2024-08-20T15:05:00Z', // Pre-viewed for testing
+      expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // Expires in 2 hours for testing
+      isExpired: false
     },
     {
       id: 4,
@@ -59,7 +72,10 @@ export const GeneratedDocsView: React.FC = () => {
       userType: 'External User',
       user: { name: 'Freddie Ty', avatar: null },
       startDate: '08/20/24 3:05 PM',
-      completionDate: null
+      completionDate: null,
+      viewedAt: null,
+      expiresAt: null,
+      isExpired: false
     },
     {
       id: 5,
@@ -69,7 +85,10 @@ export const GeneratedDocsView: React.FC = () => {
       userType: 'Candidate',
       user: { name: 'Peter Yap', avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2' },
       startDate: '08/20/24 3:05 PM',
-      completionDate: null
+      completionDate: null,
+      viewedAt: null,
+      expiresAt: null,
+      isExpired: false
     },
     // Add many more entries to reach 200+
     ...Array.from({ length: 195 }, (_, i) => ({
@@ -94,12 +113,79 @@ export const GeneratedDocsView: React.FC = () => {
         avatar: i % 3 === 0 ? `https://images.pexels.com/photos/${1000000 + i}/pexels-photo-${1000000 + i}.jpeg?auto=compress&cs=tinysrgb&w=32&h=32&dpr=2` : null
       },
       startDate: '08/20/24 3:05 PM',
-      completionDate: i % 3 === 0 ? '08/20/24 3:05 PM' : null
+      completionDate: i % 3 === 0 ? '08/20/24 3:05 PM' : null,
+      viewedAt: null,
+      expiresAt: null,
+      isExpired: false
     }))
   ];
 
   return generatedItems;
   });
+
+  // Helper function to format time remaining until expiration
+  const formatTimeRemaining = (expiresAt: string): string => {
+    const now = new Date();
+    const expiration = new Date(expiresAt);
+    const diff = expiration.getTime() - now.getTime();
+    
+    if (diff <= 0) {
+      return 'Expired';
+    }
+    
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours > 0) {
+      return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
+    } else {
+      return `${minutes}m`;
+    }
+  };
+
+  // Handle viewing a document (starts expiration timer)
+  const handleViewDocument = (id: number) => {
+    setItems(prevItems => 
+      prevItems.map(item => {
+        if (item.id === id && item.status === 'Completed' && !item.viewedAt) {
+          const now = new Date();
+          const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+          
+          return {
+            ...item,
+            viewedAt: now.toISOString(),
+            expiresAt: expiresAt.toISOString()
+          };
+        }
+        return item;
+      })
+    );
+  };
+
+  // Check for expired documents every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setItems(prevItems => 
+        prevItems.map(item => {
+          if (item.expiresAt && !item.isExpired) {
+            const now = new Date();
+            const expiration = new Date(item.expiresAt);
+            
+            if (now >= expiration) {
+              return {
+                ...item,
+                status: 'Expired',
+                isExpired: true
+              };
+            }
+          }
+          return item;
+        })
+      );
+    }, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   const filteredItems = items.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -114,6 +200,7 @@ export const GeneratedDocsView: React.FC = () => {
       case 'Completed': return 'bg-green-100 text-green-800';
       case 'In Progress': return 'bg-yellow-100 text-yellow-800';
       case 'Error': return 'bg-red-100 text-red-800';
+      case 'Expired': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -216,8 +303,9 @@ export const GeneratedDocsView: React.FC = () => {
                   </div>
                 </td>
                 <td className="py-4 px-6">
-                  <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(item.status)}`}>
-                    {item.status}
+                  <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(item.status)}`}>
+                    {item.isExpired && <AlertCircle className="w-3 h-3 mr-1" />}
+                    {item.isExpired ? 'Expired' : item.status}
                   </span>
                 </td>
                 <td className="py-4 px-6">
@@ -245,10 +333,36 @@ export const GeneratedDocsView: React.FC = () => {
                   {item.completionDate || '-'}
                 </td>
                 <td className="py-4 px-6">
-                  {item.status === 'Completed' && (
-                    <button className="text-gray-400 hover:text-gray-600">
-                      <Eye className="w-4 h-4" />
-                    </button>
+                  {item.status === 'Completed' && !item.isExpired && (
+                    <div className="flex items-center space-x-2">
+                      <button 
+                        onClick={() => handleViewDocument(item.id)}
+                        className="text-blue-500 hover:text-blue-700 transition-colors"
+                        title="View Document"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button 
+                        className="text-green-500 hover:text-green-700 transition-colors"
+                        title="Download Document"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                  {item.status === 'Completed' && item.viewedAt && !item.isExpired && item.expiresAt && (
+                    <div className="flex items-center space-x-1 text-orange-600" title={`Expires at ${new Date(item.expiresAt).toLocaleString()}`}>
+                      <Clock className="w-3 h-3" />
+                      <span className="text-xs font-medium">
+                        {formatTimeRemaining(item.expiresAt)}
+                      </span>
+                    </div>
+                  )}
+                  {item.isExpired && (
+                    <div className="flex items-center space-x-1 text-gray-400" title="Document has expired">
+                      <AlertCircle className="w-4 h-4" />
+                      <span className="text-xs">No longer accessible</span>
+                    </div>
                   )}
                 </td>
               </tr>
