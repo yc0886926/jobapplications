@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
-import { Search, Filter, ChevronDown, ChevronRight, Briefcase, MapPin, UserCheck, Plus, Eye, ChevronLeft, ChevronRight as ChevronRightIcon, List, Grid3X3 } from 'lucide-react';
+import { Search, Filter, ChevronDown, ChevronRight, Briefcase, MapPin, UserCheck, Plus, Eye, ChevronLeft, ChevronRight as ChevronRightIcon, List, Grid3x3 as Grid3X3 } from 'lucide-react';
 
 interface Application {
   id: string;
@@ -948,14 +948,11 @@ export const JobApplicationsView: React.FC<JobApplicationsViewProps> = ({ onGene
                                       )}
                                       <div>
                                         <div className="text-sm font-medium text-gray-900">
-                                          {app.candidateName}
+                                          {app.candidateName} ({app.candidateId})
                                         </div>
                                         <div className="text-xs text-gray-500">{app.email}</div>
                                       </div>
                                     </div>
-                                  </td>
-                                  <td className="py-3 px-4">
-                                    <span className="font-mono text-sm text-gray-600">{app.candidateId}</span>
                                   </td>
                                   <td className="py-3 px-4">
                                     <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(app.applicationStatus)}`}>
